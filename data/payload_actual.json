@@ -1,0 +1,163 @@
+﻿{
+  "invoiceNumber": "SAMPLE-1001",
+  "isInternational": true,
+  "shipper": {
+    "name": "EMPRESA MODELO LTDA",
+    "street": "RUA EXEMPLO",
+    "number": "123",
+    "complement": "",
+    "city": "SAO PAULO",
+    "state": "SP",
+    "postalCode": "01310000",
+    "countryCode": "BR",
+    "email": "",
+    "phone": ""
+  },
+  "recipient": {
+    "name": "CLIENTE DEMO LLC",
+    "street": "500 MARKET STREET",
+    "number": "500",
+    "complement": "",
+    "city": "NEW YORK",
+    "state": "NY",
+    "postalCode": "10001",
+    "countryCode": "US",
+    "email": "",
+    "phone": ""
+  },
+  "items": [
+    {
+      "description": "PRODUTO DEMONSTRATIVO",
+      "quantity": 10,
+      "weight": 0.1,
+      "unit": "UN",
+      "unitPrice": 100,
+      "totalValue": 1000,
+      "countryOfOrigin": "BR",
+      "hsCode": "85171231",
+      "dimensions": {
+        "length": 10,
+        "width": 10,
+        "height": 10
+      }
+    }
+  ],
+  "totals": {
+    "subtotal": 0,
+    "icms": 0,
+    "tax": 0,
+    "total": 1000,
+    "currency": "USD"
+  },
+  "labelResponseOptions": "URL_ONLY",
+  "requestedShipment": {
+    "shipper": {
+      "contact": {
+        "personName": "EMPRESA MODELO LTDA",
+        "phoneNumber": "1130000000"
+      },
+      "address": {
+        "streetLines": [
+          "RUA EXEMPLO 123"
+        ],
+        "city": "SAO PAULO",
+        "stateOrProvinceCode": "SP",
+        "postalCode": "01310000",
+        "countryCode": "BR"
+      },
+      "tins": [
+        {
+          "number": "00000000000000",
+          "tinType": "BUSINESS_NATIONAL"
+        }
+      ]
+    },
+    "recipients": [
+      {
+        "contact": {
+          "personName": "CLIENTE DEMO LLC",
+          "phoneNumber": "12125550000"
+        },
+        "address": {
+          "streetLines": [
+            "500 MARKET STREET"
+          ],
+          "city": "NEW YORK",
+          "stateOrProvinceCode": "NY",
+          "postalCode": "10001",
+          "countryCode": "US"
+        },
+        "tins": [
+          {
+            "number": "00-0000000",
+            "tinType": "BUSINESS_NATIONAL"
+          }
+        ]
+      }
+    ],
+    "shipDatestamp": "2026-01-01",
+    "serviceType": "INTERNATIONAL_ECONOMY",
+    "packagingType": "YOUR_PACKAGING",
+    "pickupType": "USE_SCHEDULED_PICKUP",
+    "shippingChargesPayment": {
+      "paymentType": "SENDER"
+    },
+    "labelSpecification": {
+      "imageType": "PDF",
+      "labelStockType": "STOCK_4X6"
+    },
+    "shipmentSpecialServices": {
+      "specialServiceTypes": [
+        "ELECTRONIC_TRADE_DOCUMENTS"
+      ],
+      "customsClearanceDetail": {
+        "dutiesPayment": {
+          "paymentType": "SENDER"
+        },
+        "commodities": [
+          {
+            "description": "PRODUTO DEMONSTRATIVO",
+            "countryOfManufacture": "BR",
+            "harmonizedCode": "85171231",
+            "quantity": 10,
+            "quantityUnits": "PCS",
+            "unitPrice": {
+              "amount": 100,
+              "currency": "USD"
+            },
+            "customsValue": {
+              "amount": 1000,
+              "currency": "USD"
+            },
+            "weight": {
+              "units": "KG",
+              "value": 0.1
+            }
+          }
+        ]
+      },
+      "requestedPackageLineItems": [
+        {
+          "customerReferences": [
+            {
+              "customerReferenceType": "INVOICE_NUMBER",
+              "value": "SAMPLE-1001"
+            }
+          ],
+          "groupPackageCount": 1,
+          "weight": {
+            "units": "KG",
+            "value": 1
+          },
+          "declaredValue": {
+            "amount": 1000,
+            "currency": "USD"
+          }
+        }
+      ]
+    },
+    "accountNumber": {
+      "value": "accountNumber"
+    }
+  }
+}

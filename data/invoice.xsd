@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  
+  <!-- Tipo simples para números -->
+  <xs:simpleType name="cnpjType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{14}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cpfType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{11}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="cepType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{8}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="phoneType">
+    <xs:restriction base="xs:string">
+      <xs:pattern value="\d{10,11}"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="decimalType">
+    <xs:restriction base="xs:decimal">
+      <xs:minInclusive value="0"/>
+      <xs:fractionDigits value="2"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <!-- Endereço -->
+  <xs:complexType name="addressType">
+    <xs:sequence>
+      <xs:element name="street" type="xs:string"/>
+      <xs:element name="number" type="xs:string"/>
+      <xs:element name="complement" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string"/>
+      <xs:element name="state" type="xs:string" fixed="SP"/>
+      <xs:element name="cep" type="cepType"/>
+      <xs:element name="country" type="xs:string" default="BR"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Emitente -->
+  <xs:complexType name="issuerType">
+    <xs:sequence>
+      <xs:element name="cnpj" type="cnpjType"/>
+      <xs:element name="companyName" type="xs:string"/>
+      <xs:element name="tradeName" type="xs:string"/>
+      <xs:element name="address" type="addressType"/>
+      <xs:element name="email" type="xs:string"/>
+      <xs:element name="phone" type="phoneType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Destinatário -->
+  <xs:complexType name="receiverType">
+    <xs:sequence>
+      <xs:element name="cnpj" type="cnpjType" minOccurs="0"/>
+      <xs:element name="cpf" type="cpfType" minOccurs="0"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="address" type="addressType"/>
+      <xs:element name="email" type="xs:string" minOccurs="0"/>
+      <xs:element name="phone" type="phoneType" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Item da Nota Fiscal -->
+  <xs:complexType name="invoiceItemType">
+    <xs:sequence>
+      <xs:element name="itemNumber" type="xs:positiveInteger"/>
+      <xs:element name="description" type="xs:string"/>
+      <xs:element name="ncm" type="xs:string"/>
+      <xs:element name="quantity" type="xs:decimal"/>
+      <xs:element name="unit" type="xs:string"/>
+      <xs:element name="unitPrice" type="decimalType"/>
+      <xs:element name="totalValue" type="decimalType"/>
+      <xs:element name="discount" type="decimalType" minOccurs="0" default="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Totalizadores -->
+  <xs:complexType name="totalsType">
+    <xs:sequence>
+      <xs:element name="subtotal" type="decimalType"/>
+      <xs:element name="discount" type="decimalType" default="0"/>
+      <xs:element name="icms" type="decimalType" default="0"/>
+      <xs:element name="ipi" type="decimalType" default="0"/>
+      <xs:element name="pis" type="decimalType" default="0"/>
+      <xs:element name="cofins" type="decimalType" default="0"/>
+      <xs:element name="total" type="decimalType"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Nota Fiscal -->
+  <xs:complexType name="invoiceType">
+    <xs:sequence>
+      <xs:element name="invoiceNumber" type="xs:string"/>
+      <xs:element name="series" type="xs:string"/>
+      <xs:element name="issueDate" type="xs:dateTime"/>
+      <xs:element name="referenceMonth" type="xs:gYearMonth"/>
+      <xs:element name="issuer" type="issuerType"/>
+      <xs:element name="receiver" type="receiverType"/>
+      <xs:element name="items">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="item" type="invoiceItemType" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="totals" type="totalsType"/>
+      <xs:element name="notes" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <!-- Elemento raiz -->
+  <xs:element name="invoice" type="invoiceType"/>
+
+</xs:schema>

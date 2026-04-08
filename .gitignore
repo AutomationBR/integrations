@@ -1,0 +1,21 @@
+node_modules/
+coverage/
+output/
+payload_debug.json
+payload_debug_new.json
+*.log
+*-output.txt
+*-test-output.txt
+full-test-*.txt
+test-output.txt
+src/debug/*.json
+*.bak
+.env
+test-*.json
+
+# Storage files - generated at runtime, never commit
+storage/*.json
+
+# Debug scripts - local development only
+src/debug.js
+src/debugPayload.js

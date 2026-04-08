@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: xml_converter_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: xml_converter
+      POSTGRES_USER: xml_converter
+      POSTGRES_PASSWORD: xml_converter
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U xml_converter -d xml_converter"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xml_converter_api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PORT: 3000
+      WORKER_POLL_MS: 1000
+      DATABASE_URL: postgres://xml_converter:xml_converter@postgres:5432/xml_converter
+      FEDEX_BASE_URL: ${FEDEX_BASE_URL:-https://apis-sandbox.fedex.com}
+      FEDEX_ACCOUNT_NUMBER: ${FEDEX_ACCOUNT_NUMBER:-}
+      FEDEX_API_KEY: ${FEDEX_API_KEY:-}
+      FEDEX_API_SECRET: ${FEDEX_API_SECRET:-}
+    command: ["node", "src/api/server.js"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./output:/app/output
+      - ./storage:/app/storage
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: xml_converter_worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_started
+    environment:
+      WORKER_POLL_MS: 1000
+      DATABASE_URL: postgres://xml_converter:xml_converter@postgres:5432/xml_converter
+      FEDEX_BASE_URL: ${FEDEX_BASE_URL:-https://apis-sandbox.fedex.com}
+      FEDEX_ACCOUNT_NUMBER: ${FEDEX_ACCOUNT_NUMBER:-}
+      FEDEX_API_KEY: ${FEDEX_API_KEY:-}
+      FEDEX_API_SECRET: ${FEDEX_API_SECRET:-}
+    command: ["node", "src/jobs/shipmentWorker.js"]
+    volumes:
+      - ./output:/app/output
+      - ./storage:/app/storage
+
+volumes:
+  postgres_data:

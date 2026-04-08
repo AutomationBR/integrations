@@ -1,0 +1,27 @@
+{
+  "name": "xml_converter",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "start:api": "node src/api/server.js",
+    "start:worker": "node src/jobs/shipmentWorker.js",
+    "db:init": "node scripts/initPostgres.js",
+    "db:check": "node scripts/checkPostgres.js",
+    "smoke:stack": "node scripts/smokeStackFlow.js",
+    "test": "jest",
+    "test:integration:pg": "jest tests/pgIntegration.test.js --runInBand",
+    "test:integration:flow": "jest tests/pgApiWorkerFlow.test.js --runInBand",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.0.0",
+    "pg": "^8.20.0",
+    "xml2js": "^0.6.2"
+  },
+  "devDependencies": {
+    "jest": "^30.3.0"
+  }
+}
