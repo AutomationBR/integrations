@@ -53,8 +53,7 @@ describe('ops status endpoint', () => {
 
   afterEach(done => {
     server.close(() => {
-      Promise.all([shipmentRepository.clear(), jobQueueRepository.clear()]).then(() => {
-        workerStateRepository.reset();
+      Promise.all([shipmentRepository.clear(), jobQueueRepository.clear(), workerStateRepository.reset()]).then(() => {
         done();
       });
     });
@@ -64,11 +63,17 @@ describe('ops status endpoint', () => {
     const created = await shipmentRepository.create({ type: 'payload', invoiceNumber: 'OPS-1' });
     await shipmentRepository.update(created.id, { status: 'queued' });
     await jobQueueRepository.enqueue('payload', { shipmentRecordId: created.id, invoiceData: {} });
-    workerStateRepository.markStarted({ pollMs: 1000 });
+    await workerStateRepository.markStarted({ pollMs: 1000 });
+
+    // Add a small delay to ensure data is persisted before querying
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     const response = await request(server, {
       method: 'GET',
-      path: '/ops/status'
+      path: '/ops/status',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     expect(response.statusCode).toBe(200);

@@ -52,6 +52,7 @@ describe('shipmentWorker', () => {
     const loadedJob = await jobQueueRepository.get(claimed.id);
 
     expect(claimed).not.toBeNull();
+    expect(loadedShipment).not.toBeNull();
     expect(loadedShipment.status).toBe('completed');
     expect(loadedShipment.result.shipmentId).toBe('SHIP-1');
     expect(loadedJob.status).toBe('completed');
@@ -84,8 +85,7 @@ describe('shipmentWorker', () => {
     await shipmentRepository.update(shipment.id, { status: 'queued' });
     await jobQueueRepository.enqueue('payload', {
       shipmentRecordId: shipment.id,
-      invoiceData: { invoiceNumber: 'TEST-DLQ' },
-      correlationId: 'corr-dlq'
+      invoiceData: { invoiceNumber: 'TEST-DLQ', correlationId: 'corr-dlq' }
     }, { maxAttempts: 1 });
 
     processInvoiceData.mockResolvedValue({
@@ -93,11 +93,11 @@ describe('shipmentWorker', () => {
       error: 'permanent issue'
     });
 
+    await drainQueueOnce({ shipmentRepository, jobQueueRepository, deadLetterRepository });
     const claimed = await drainQueueOnce({ shipmentRepository, jobQueueRepository, deadLetterRepository });
-    const loadedJob = await jobQueueRepository.get(claimed.id);
     const deadLetters = await deadLetterRepository.list();
 
-    expect(loadedJob.status).toBe('failed');
+    expect(claimed.status).toBe('dead_letter');
     expect(deadLetters).toHaveLength(1);
     expect(deadLetters[0].correlationId).toBe('corr-dlq');
   });

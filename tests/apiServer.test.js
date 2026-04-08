@@ -341,7 +341,7 @@ describe('API server', () => {
   });
 
   test('filtra queue jobs por status', async () => {
-    await queueRepository.enqueue('payload', {
+    const first = await queueRepository.enqueue('payload', {
       shipmentRecordId: 's1',
       invoiceData: {},
       correlationId: 'corr-q-1'
@@ -351,7 +351,8 @@ describe('API server', () => {
       invoiceData: {},
       correlationId: 'corr-q-2'
     });
-    await queueRepository.cancel(queued.id, 'cancelled for test');
+    const cancelled = await queueRepository.cancel(queued.id, 'cancelled for test');
+    expect(cancelled.status).toBe('cancelled');
 
     const response = await request(server, {
       method: 'GET',
